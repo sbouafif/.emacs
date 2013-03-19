@@ -21,6 +21,9 @@
 (setq auto-save-file-name-transforms
       `((".*" ,temporary-file-directory t)))
 
+;; undo remapped
+(define-key global-map (kbd "C-u") 'undo)
+
 ;; utf8
 (setq locale-coding-system 'utf-8)
 (set-terminal-coding-system 'utf-8)
@@ -30,6 +33,30 @@
 
 ;; Modes
 (setq load-path (append (list (expand-file-name "~/.emacs.d/")) load-path))
+
+;;
+;; ace jump mode major function
+;; 
+(add-to-list 'load-path "/full/path/where/ace-jump-mode.el/in/")
+(autoload
+  'ace-jump-mode
+  "ace-jump-mode"
+  "Emacs quick move minor mode"
+  t)
+;; you can select the key you prefer to
+(define-key global-map (kbd "C-c SPC") 'ace-jump-mode)
+
+;; 
+;; enable a more powerful jump back function from ace jump mode
+;;
+(autoload
+  'ace-jump-mode-pop-mark
+  "ace-jump-mode"
+  "Ace jump back:-)"
+  t)
+(eval-after-load "ace-jump-mode"
+  '(ace-jump-mode-enable-mark-sync))
+(define-key global-map (kbd "C-x SPC") 'ace-jump-mode-pop-mark)
 
 (require 'whitespace)
 (autoload 'whitespace-mode           "whitespace" "Toggle whitespace visualization."        t)
@@ -81,3 +108,26 @@
 (autoload 'php-mode "php-mode" "Major mode for editing php code." t)
 (add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
+
+;; SLIME for swank.js
+(global-set-key [f5] 'slime-js-reload)
+(add-hook 'js2-mode-hook
+          (lambda ()
+            (slime-js-minor-mode 1)))
+
+(add-hook 'css-mode-hook
+          (lambda ()
+            (define-key css-mode-map "\M-\C-x" 'slime-js-refresh-css)
+            (define-key css-mode-map "\C-c\C-r" 'slime-js-embed-css)))
+
+;; Expand region
+(add-to-list 'load-path "~/.emacs.d/expand-region.el")
+(require 'expand-region)
+(global-set-key (kbd "C-@") 'er/expand-region)
+
+;; Multiple cursors
+(add-to-list 'load-path "~/.emacs.d/multiple-cursors")
+(require 'multiple-cursors)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
