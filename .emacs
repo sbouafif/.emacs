@@ -12,6 +12,9 @@
 ;; Show line number
 (global-linum-mode 1)
 
+;; Auto refresh all buffers on file change
+(global-auto-revert-mode t)
+
 ;; Goto-line short-cut key
 (global-set-key "\C-l" 'goto-line)
 
@@ -74,6 +77,12 @@
 (require 'stylus-mode)
 (autoload 'sytlus-mode "stylus" nil t)
 (add-to-list 'auto-mode-alist '("\\.styl$" . sws-mode))
+(require 'scss-mode)
+(autoload 'scss-mode "scss" nil t)
+(add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
+;;(require 'sass-mode)
+;;(autoload 'sass-mode "sass" nil t)
+;;(add-to-list 'auto-mode-alist '("\\.sass$" . sass-mode))
 
 ;; Auto-complete
 (add-to-list 'load-path "~/.emacs.d/auto-complete")
@@ -110,6 +119,38 @@
 (add-to-list 'auto-mode-alist '("\\.inc$" . php-mode))
 
 ;; SLIME for swank.js
+(add-to-list 'load-path "~/.emacs.d/slime")
+(add-to-list 'load-path "~/.emacs.d/slime/contrib")
+(setq slime-backend "~/.emacs.d/slime/swank-loader.lisp")
+(load "slime-autoloads")
+(require 'slime)
+(require 'slime-autoloads)
+(eval-after-load "slime"
+`(progn
+(slime-setup '(slime-repl))
+(custom-set-variables
+'(inhibit-splash-screen t)
+'(slime-complete-symbol*-fancy t)
+'(slime-complete-symbol-function ‘slime-fuzzy-complete-symbol)
+'(slime-net-coding-system ‘utf-8-unix)
+'(slime-startup-animation nil)
+'(slime-lisp-implementations ‘((sbcl ("/opt/local/bin/sbcl"))))))) 
+;;(require 'slime-autoloads)
+;;(setq slime-lisp-implementations `(sbcl ("/opt/local/bin/sbcl"))
+;;(add-hook 'lisp-mode-hook
+;;  (lambda () 
+;;    (cond ((not (featurep 'slime)) (require 'slime) (normal-mode)))))
+;;(eval-after-load "slime" '(slime-setup '(slime-fancy slime-banner)))
+;;(require 'slime)
+;;(add-hook 'lisp-mode-hook 
+;;          (lambda () 
+;;            (slime-mode t)))
+(add-hook 'inferior-lisp-mode-hook 
+          (lambda () 
+            (inferior-slime-mode t)))
+;; Optionally, specify the lisp program you are using. Default is "lisp"
+(setq inferior-lisp-program "sbcl") 
+
 (global-set-key [f5] 'slime-js-reload)
 (add-hook 'js2-mode-hook
           (lambda ()
@@ -128,6 +169,7 @@
 ;; Multiple cursors
 (add-to-list 'load-path "~/.emacs.d/multiple-cursors")
 (require 'multiple-cursors)
-(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-#") 'mc/edit-lines)
+(global-set-key (kbd "C-n") 'mc/mark-next-like-this)
 (global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
