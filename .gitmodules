@@ -10,3 +10,6 @@
 [submodule "multiple-cursors"]
 	path = multiple-cursors
 	url = git://github.com/magnars/multiple-cursors.el.git
+[submodule "lintnode"]
+	path = lintnode
+	url = git@github.com:keturn/lintnode.git
