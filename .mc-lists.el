@@ -3,9 +3,15 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        c-electric-semi&comma
+        c-electric-slash
+        indent-for-tab-command
+        php-expand-abbrev
+        sgml-slash
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        python-indent-dedent-line-backspace
         upcase-region
         ))
