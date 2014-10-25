@@ -1,15 +1,6 @@
-[submodule "flymake-jslint"]
-	path = flymake-jslint
-	url = https://github.com/purcell/flymake-jslint.git
-[submodule "expand-region.el"]
-	path = expand-region.el
-	url = git://github.com/magnars/expand-region.el.git
 [submodule "mark-multiple.el"]
 	path = mark-multiple.el
 	url = git://github.com/magnars/mark-multiple.el.git
-[submodule "multiple-cursors"]
-	path = multiple-cursors
-	url = git://github.com/magnars/multiple-cursors.el.git
 [submodule "lintnode"]
 	path = lintnode
 	url = git@github.com:keturn/lintnode.git

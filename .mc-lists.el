@@ -3,10 +3,16 @@
 
 (setq mc/cmds-to-run-for-all
       '(
+        c-electric-brace
+        c-electric-colon
+        c-electric-paren
+        c-electric-pound
         c-electric-semi&comma
         c-electric-slash
+        c-electric-star
         indent-for-tab-command
         php-expand-abbrev
+        sgml-maybe-name-self
         sgml-slash
         ))
 
