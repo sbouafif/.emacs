@@ -38,11 +38,15 @@
     go-mode
     htmlize
     js2-mode
+    web-mode
     flycheck
+    scss-mode
     whitespace
     smartparens
+    js2-refactor
     expand-region
     auto-complete
+    less-css-mode
     smart-tabs-mode
     multiple-cursors
     fill-column-indicator
@@ -69,11 +73,61 @@
 (global-whitespace-mode t)
 (setq-default tab-width 2)
 
+(defadvice align (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+
+(defadvice align-regexp (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+
+(defadvice indent-relative (around smart-tabs activate)
+  (let ((indent-tabs-mode nil)) ad-do-it))
+
+(defadvice indent-according-to-mode (around smart-tabs activate)
+  (let ((indent-tabs-mode indent-tabs-mode))
+    (if (memq indent-line-function
+              '(indent-relative
+                indent-relative-maybe))
+        (setq indent-tabs-mode nil))
+    ad-do-it))
+
+(defmacro smart-tabs-advice (function offset)
+  `(progn
+     (defvaralias ',offset 'tab-width)
+     (defadvice ,function (around smart-tabs activate)
+       (cond
+        (indent-tabs-mode
+         (save-excursion
+           (beginning-of-line)
+           (while (looking-at "\t*\\( +\\)\t+")
+             (replace-match "" nil nil nil 1)))
+         (setq tab-width tab-width)
+         (let ((tab-width fill-column)
+               (,offset fill-column)
+               (wstart (window-start)))
+           (unwind-protect
+               (progn ad-do-it)
+             (set-window-start (selected-window) wstart))))
+        (t
+                  ad-do-it)))))
+
 (smart-tabs-add-language-support go go-mode-hook
       ((go-indent-line . js2-basic-offset)
        (go-indent-region . js2-basic-offset)))
 
-(smart-tabs-insinuate 'c 'javascript 'go)
+(smart-tabs-add-language-support php web-mode-hook
+      ((web-indent-line . js2-basic-offset)
+       (web-indent-region . js2-basic-offset)))
+
+
+(smart-tabs-add-language-support less web-mode-hook
+      ((web-indent-line . js2-basic-offset)
+       (web-indent-region . js2-basic-offset)))
+
+(smart-tabs-add-language-support scss scss-mode-hook
+      ((web-indent-line . js2-basic-offset)
+       (web-indent-region . js2-basic-offset)))
+
+(smart-tabs-insinuate 'c 'javascript 'go 'php 'less 'scss)
 
 ;; Default setup of smartparens
 (require 'smartparens-config)
