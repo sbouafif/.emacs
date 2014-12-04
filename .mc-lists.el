@@ -10,10 +10,12 @@
         c-electric-semi&comma
         c-electric-slash
         c-electric-star
+        c-indent-line-or-region
         indent-for-tab-command
         php-expand-abbrev
         sgml-maybe-name-self
         sgml-slash
+        sp--self-insert-command
         ))
 
 (setq mc/cmds-to-run-once

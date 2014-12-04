@@ -19,7 +19,7 @@
 (setq-default js2-strict-missing-semi-warning nil)
 (setq-default js2-strict-trailing-comma-warning t) ;; jshint does not warn about this now for some reason
 
-(add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
+;;(add-hook 'js2-mode-hook (lambda () (flycheck-mode 1)))
 
 (require 'js2-refactor)
 (js2r-add-keybindings-with-prefix "C-c C-m")
@@ -150,114 +150,6 @@
 (define-key js2-mode-map (kbd "C-x C-r") 'js2r-rename-current-buffer-file)
 (define-key js2-mode-map (kbd "C-x C-k") 'js2r-delete-current-buffer-file)
 
-;; Use lambda for anonymous functions
-(font-lock-add-keywords
- 'js2-mode `(("\\(function\\) *("
-              (0 (progn (compose-region (match-beginning 1)
-                                        (match-end 1) "\u0192")
-                        nil)))))
-
-;; Use right arrow for return in one-line functions
-(font-lock-add-keywords
- 'js2-mode `(("function *([^)]*) *{ *\\(return\\) "
-              (0 (progn (compose-region (match-beginning 1)
-                                        (match-end 1) "\u2190")
-                        nil)))))
-
-;; After js2 has parsed a js file, we look for jslint globals decl comment ("/* global Fred, _, Harry */") and
-;; add any symbols to a buffer-local var of acceptable global vars
-;; Note that we also support the "symbol: true" way of specifying names via a hack (remove any ":true"
-;; to make it look like a plain decl, and any ':false' are left behind so they'll effectively be ignored as
-;; you can;t have a symbol called "someName:false"
-(add-hook 'js2-post-parse-callbacks
-          (lambda ()
-            (when (> (buffer-size) 0)
-              (let ((btext (replace-regexp-in-string
-                            ": *true" " "
-                            (replace-regexp-in-string "[\n\t ]+" " " (buffer-substring-no-properties 1 (buffer-size)) t t))))
-                (mapc (apply-partially 'add-to-list 'js2-additional-externs)
-                      (split-string
-                       (if (string-match "/\\* *global *\\(.*?\\) *\\*/" btext) (match-string-no-properties 1 btext) "")
-                       " *, *" t))
-                ))))
-
 (require 'json)
-
-;; Tern.JS
-(add-to-list 'load-path (expand-file-name "tern/emacs" site-lisp-dir))
-(autoload 'tern-mode "tern.el" nil t)
-;;(add-hook 'js2-mode-hook (lambda () (tern-mode t)))
-(eval-after-load 'auto-complete
-  '(eval-after-load 'tern
-     '(progn
-        (require 'tern-auto-complete)
-        (tern-ac-setup))))
-
-
-(defun my-aget (key map)
-  (cdr (assoc key map)))
-
-(defun js2-fetch-autolint-externs (file)
-  (let* ((settings (with-temp-buffer
-                     (insert-file-literally file)
-                     (javascript-mode)
-                     (let (kill-ring kill-ring-yank-pointer) (kill-comment 1000))
-                     (->> (buffer-substring (point-min) (point-max))
-                       (s-trim)
-                       (s-chop-prefix "module.exports = ")
-                       (s-chop-suffix ";")
-                       (json-read-from-string))))
-         (predef (->> settings
-                   (my-aget 'linterOptions)
-                   (my-aget 'predef))))
-    (--each (append predef nil)
-      (add-to-list 'js2-additional-externs it))))
-
-(defun cjsp--eldoc-innards (beg)
-  (save-excursion
-    (goto-char beg)
-    (search-forward "=")
-    (let ((start (point)))
-      (search-forward "*/")
-      (forward-char -2)
-      (buffer-substring-no-properties start (point)))))
-
-(defun cjsp--indentation-of-html-line (html line-number)
-  (with-temp-buffer
-    (insert html)
-    (html-mode)
-    (indent-region (point-min) (point-max))
-    (goto-line line-number)
-    (back-to-indentation)
-    (current-column)))
-
-(defun cjsp--line-number-in-eldoc (p beg)
-  (save-excursion
-    (goto-char p)
-    (let ((l (line-number-at-pos)))
-      (goto-char beg)
-      (- l (line-number-at-pos) -1))))
-
-(defun js2-lineup-comment (parse-status)
-  "Indent a multi-line block comment continuation line."
-  (let* ((beg (nth 8 parse-status))
-         (first-line (js2-same-line beg))
-         (p (point))
-         (offset (save-excursion
-                   (goto-char beg)
-                   (cond
-
-                    ((looking-at "/\\*:DOC ")
-                     (+ 2 (current-column)
-                        (cjsp--indentation-of-html-line
-                         (cjsp--eldoc-innards beg)
-                         (cjsp--line-number-in-eldoc p beg))))
-
-                    ((looking-at "/\\*")
-                     (+ 1 (current-column)))
-
-                    (:else 0)))))
-    (unless first-line
-      (indent-line-to offset))))
 
 (provide 'setup-js2-mode)
