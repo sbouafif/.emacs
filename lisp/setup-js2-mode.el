@@ -1,3 +1,5 @@
+(add-to-list 'auto-mode-alist '("\\.js\\'" . js2-mode))
+
 ;;; setup-js2-mode.el --- tweak js2 settings -*- lexical-binding: t; -*-
 
 (setq-default js2-allow-rhino-new-expr-initializer nil)
