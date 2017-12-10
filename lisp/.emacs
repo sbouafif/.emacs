@@ -34,23 +34,22 @@
 
 (defun init--install-packages ()
   (packages-install
-   '(smex
-    go-mode
-    htmlize
-    js2-mode
-    web-mode
-    flycheck
-    scss-mode
-    whitespace
-    smartparens
-    js2-refactor
-    expand-region
-    auto-complete
-    less-css-mode
-    smart-tabs-mode
-    multiple-cursors
-    fill-column-indicator
-    highlight-escape-sequences)))
+   '(use-package
+     which-key
+     smex
+     swiper
+     ;;projectile
+     company
+     htmlize
+     js2-mode
+     web-mode
+     flycheck
+     whitespace
+     smartparens
+     expand-region
+     smart-tabs-mode
+     multiple-cursors
+     highlight-escape-sequences)))
 
 (condition-case nil
     (init--install-packages)
@@ -153,19 +152,63 @@
 (autoload 'flycheck-mode "setup-flycheck" nil t)
 
 
-;; auto-complete
+;; auto-complete // company
+
+;; tab autocomplete
+(eval-after-load 'company
+  '(progn
+     (define-key company-active-map (kbd "TAB") 'company-complete-common-or-cycle)
+     (define-key company-active-map (kbd "<tab>") 'company-complete-common-or-cycle)))
+
+(setq company-auto-complete t)
+
+;; Finally, to cancel selections by typing non-matching characters
+(setq company-require-match 'never)
+
+(add-hook 'after-init-hook 'global-company-mode)
+
+;;(defun indent-or-complete ()
+;;    (interactive)
+;;    (if (looking-at "\\_>")
+;;        (company-complete-common)
+;;      (indent-according-to-mode)))
+;;
+;;(global-set-key "\t" 'company-complete-common)
+
+;; no delay
+(setq company-idle-delay 0)
+
+;; company theme
+(eval-after-load 'company
+  (lambda ()
+    (custom-set-faces
+     '(company-preview
+       ((t (:foreground "darkgray" :underline t))))
+     '(company-preview-common
+       ((t (:inherit company-preview))))
+     '(company-tooltip
+       ((t (:background "lightgray" :foreground "black"))))
+     '(company-tooltip-selection
+       ((t (:background "steelblue" :foreground "white"))))
+     '(company-tooltip-common
+       ((((type x)) (:inherit company-tooltip :weight bold))
+        (t (:inherit company-tooltip))))
+     '(company-tooltip-common-selection
+       ((((type x)) (:inherit company-tooltip-selection :weight bold))
+        (t (:inherit company-tooltip-selection)))))))
 
 ;; Load the default configuration
-(require 'auto-complete-config)
+;; (require 'auto-complete-config)
 ;; Make sure we can find the dictionaries
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
+;;(add-to-list 'ac-dictionary-directories "~/.emacs.d/auto-complete/dict")
 ;; Use dictionaries by default
-(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
-(global-auto-complete-mode t)
+;;(setq-default ac-sources (add-to-list 'ac-sources 'ac-source-dictionary))
+;;(global-auto-complete-mode t)
 ;; Start auto-completion after 2 characters of a word
-(setq ac-auto-start 2)
+;;(setq ac-auto-start 2)
 ;; case sensitivity is important when finding matches
-(setq ac-ignore-case nil)
+;;(setq ac-ignore-case nil)
+
 
 ;; Map files to modes
 (require 'mode-mappings)
@@ -221,3 +264,31 @@
         (message "No non-ascii characters."))))
 
 (require 'key-bindings)
+
+;; Backup files
+(setq backup-directory-alist
+      `(("." . ,(expand-file-name
+                 (concat user-emacs-directory "backups")))))
+
+(setq auto-save-file-name-transforms
+      `((".*" ,(expand-file-name
+                (concat user-emacs-directory "auto-save")) t)))
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (counsel swiper-helm projectile-codesearch which-key web-mode sml-mode smex smartparens smart-tabs-mode scss-mode php-mode paredit package-build package+ json-mode js2-refactor jade-mode htmlize highlight-escape-sequences go-mode go-errcheck go-autocomplete flymake-sass flymake-php flymake-less flymake-json flymake-jslint flymake-jshint flymake-csslint flymake-css flycheck fill-column-indicator expand-region exec-path-from-shell clojure-mode cake2 auto-indent-mode apache-mode))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(company-preview ((t (:foreground "darkgray" :underline t))))
+ '(company-preview-common ((t (:inherit company-preview))))
+ '(company-tooltip ((t (:background "lightgray" :foreground "black"))))
+ '(company-tooltip-common ((((type x)) (:inherit company-tooltip :weight bold)) (t (:inherit company-tooltip))))
+ '(company-tooltip-common-selection ((((type x)) (:inherit company-tooltip-selection :weight bold)) (t (:inherit company-tooltip-selection))))
+ '(company-tooltip-selection ((t (:background "steelblue" :foreground "white")))))

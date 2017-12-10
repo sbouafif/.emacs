@@ -16,10 +16,14 @@
         sgml-maybe-name-self
         sgml-slash
         sp--self-insert-command
+        sp-remove-active-pair-overlay
+        xterm-paste
         ))
 
 (setq mc/cmds-to-run-once
       '(
+        goto-line
+        match-paren
         python-indent-dedent-line-backspace
         upcase-region
         ))
