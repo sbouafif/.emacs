@@ -37,12 +37,11 @@
    '(use-package
      which-key
      smex
-     swiper
-     ;;projectile
      company
      htmlize
      js2-mode
      web-mode
+     php-mode
      flycheck
      whitespace
      smartparens
@@ -123,6 +122,10 @@
        (web-indent-region . js2-basic-offset)))
 
 (smart-tabs-add-language-support scss scss-mode-hook
+      ((web-indent-line . js2-basic-offset)
+       (web-indent-region . js2-basic-offset)))
+
+(smart-tabs-add-language-support js js-mode-hook
       ((web-indent-line . js2-basic-offset)
        (web-indent-region . js2-basic-offset)))
 
@@ -225,6 +228,8 @@
 (require 'smex)
 (smex-initialize)
 
+(setq enable-recursive-minibuffers t)
+
 ;; Indentation for python
 ;; Ignoring electric indentation
 (defun electric-indent-ignore-python (char)
@@ -280,7 +285,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (counsel swiper-helm projectile-codesearch which-key web-mode sml-mode smex smartparens smart-tabs-mode scss-mode php-mode paredit package-build package+ json-mode js2-refactor jade-mode htmlize highlight-escape-sequences go-mode go-errcheck go-autocomplete flymake-sass flymake-php flymake-less flymake-json flymake-jslint flymake-jshint flymake-csslint flymake-css flycheck fill-column-indicator expand-region exec-path-from-shell clojure-mode cake2 auto-indent-mode apache-mode))))
+    (projectile-codesearch which-key web-mode sml-mode smex smartparens smart-tabs-mode scss-mode php-mode paredit package-build package+ json-mode js2-refactor jade-mode htmlize highlight-escape-sequences go-mode go-errcheck go-autocomplete flymake-sass flymake-php flymake-less flymake-json flymake-jslint flymake-jshint flymake-csslint flymake-css flycheck expand-region exec-path-from-shell clojure-mode cake2 auto-indent-mode apache-mode))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.

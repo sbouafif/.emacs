@@ -91,8 +91,17 @@
 ;; Sentences do not need double spaces to end. Period.
 (set-default 'sentence-end-double-space nil)
 
+;; Swiper recursive search & replace
+(setq enable-recursive-minibuffers t)
+(setq swiper-completion-method 'ivy)
+
 ;; 80 chars is a good width.
 (set-default 'fill-column 80)
+
+;; JS indentation
+(setq js-indent-level 2)
+(setq js2-indent-level 2)
+(setq js2-basic-offset 2)
 
 ;; Add parts of each file's directory to the buffer name if not unique
 (require 'uniquify)
@@ -119,3 +128,12 @@
       (when (= p (point)) ad-do-it))))
 
 (provide 'sane-defaults)
+
+
+;; PHP mode
+;; (add-hook 'php-mode-hook 'my-php-mode-hook)
+;; (defun my-php-mode-hook ()
+;;   "My PHP mode configuration."
+;;   (setq indent-tabs-mode nil
+;;         tab-width 4
+;;         c-basic-offset 4))

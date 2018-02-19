@@ -37,10 +37,10 @@
 (global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
 
 ;; Swiper
-(ivy-mode 1)
-(global-set-key "\C-s" 'swiper)
-(global-set-key "\C-r" 'swiper)
-(global-set-key (kbd "C-c C-r") 'ivy-resume)
+;;(ivy-mode 1)
+;;(global-set-key "\C-s" 'swiper)
+;;(global-set-key "\C-r" 'swiper)
+;;(global-set-key (kbd "C-c C-r") 'ivy-resume)
 
 ;; UTF8
 (setq locale-coding-system 'utf-8)
