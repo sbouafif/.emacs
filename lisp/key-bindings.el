@@ -16,8 +16,8 @@
 (global-set-key "\C-l" 'goto-line)
 
 ;; Fill column indicator
-(require 'fill-column-indicator)
-(setq fci-rule-color "#111122")
+;; (require 'fill-column-indicator)
+;; (setq fci-rule-color "#111122")
 
 ;; undo remapped
 (define-key global-map (kbd "C-u") 'undo)
